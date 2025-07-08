@@ -1,4 +1,5 @@
 const path = require("path");
+const __DIRNAME = path.resolve();
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -7,7 +8,7 @@ const cors = require("cors");
 
 const allowedOrigin = process.env.FRONT;
 const app = express();
-
+app.use(express.static(path.join(__dirname, "/max-formation/dist")));
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -24,10 +25,10 @@ app.use(routes);
 
 // Serve build **only in production**
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/client/dist")));
+  app.use(express.static(path.join(__DIRNAME, "/max-formation/dist")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "/client/dist/index.html"));
+  app.get(/(.*)/, (req, res) => {
+    res.sendFile(path.join(__DIRNAME, "/max-formation/dist/index.html"));
   });
 }
 
