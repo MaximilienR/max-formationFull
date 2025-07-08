@@ -1,5 +1,4 @@
 const path = require("path");
-const __DIRNAME = path.resolve();
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -8,9 +7,12 @@ const cors = require("cors");
 
 const allowedOrigin = process.env.FRONT;
 const app = express();
-app.use(express.static(path.join(__dirname, "/max-formation/dist")));
+
+// Middleware pour parser le JSON
 app.use(express.json());
 app.use(cookieParser());
+
+// Configuration CORS
 app.use(
   cors({
     origin: allowedOrigin,
@@ -20,22 +22,26 @@ app.use(
   })
 );
 
+// Tes routes API
 const routes = require("./routes");
 app.use(routes);
 
-// Serve build **only in production**
+// En production, sert les fichiers statiques du build React
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__DIRNAME, "/max-formation/dist")));
+  app.use(express.static(path.join(__dirname, "../max-formation/dist")));
 
-  app.get(/(.*)/, (req, res) => {
-    res.sendFile(path.join(__DIRNAME, "/max-formation/dist/index.html"));
+  // Toute route non gérée par l'API renvoie index.html (React Router)
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../max-formation/dist/index.html"));
   });
 }
 
+// Connexion à MongoDB
 mongoose
-  .connect(process.env.MOGO_URI)
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((e) => console.error(e));
 
+// Lancement du serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
