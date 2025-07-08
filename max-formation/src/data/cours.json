@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "titre": "Les Origines (Années 1960)",
+    "contenu": "Tout a commencé avec ARPANET, un projet de l'Agence pour les projets de recherche avancée de la Défense (DARPA) aux États-Unis. L'objectif était de créer un réseau informatique décentralisé capable de résister à une attaque nucléaire.",
+    "points": [
+      "1969 : Première connexion ARPANET entre l'Université de Californie à Los Angeles (UCLA) et l'Université de Stanford.",
+      "Développement du protocole TCP/IP, la base d'Internet."
+    ]
+  },
+  {
+    "id": 2,
+    "titre": "L'Expansion (Années 1970-1980)",
+    "contenu": "Internet s'étend au-delà des institutions gouvernementales et universitaires.",
+    "points": [
+      "1971 : Envoi du premier e-mail par Ray Tomlinson.",
+      "1983 : Adoption du protocole TCP/IP, marquant la naissance officielle d'Internet.",
+      "1989 : Tim Berners-Lee invente le World Wide Web (WWW) au CERN."
+    ]
+  },
+  {
+    "id": 3,
+    "titre": "Le Web (Années 1990)",
+    "contenu": "Le World Wide Web révolutionne Internet, le rendant accessible au grand public.",
+    "points": [
+      "1991 : Lancement du WWW, permettant la navigation avec des liens hypertextes.",
+      "1993 : Création de Mosaic, le premier navigateur web graphique.",
+      "Essor des moteurs de recherche comme Yahoo! et Google."
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nom": "React",
+    "image": "/src/Assets/react.png",
+    "description": "React est une bibliothèque JavaScript pour construire des interfaces utilisateur.",
+    "niveau": 4,
+    "prix": "0€00"
+  },
+  {
+    "id": 2,
+    "nom": "Angular",
+    "image": "/src/Assets/Angular.jpg",
+    "description": "Angular est un framework complet pour créer des applications web robustes.",
+    "niveau": 3,
+    "prix": "0€00"
+  },
+  {
+    "id": 3,
+    "nom": "Vue.js",
+    "image": "/src/Assets/vue.jpg",
+    "description": "Vue.js est un framework JavaScript progressif pour construire des interfaces interactives.",
+    "niveau": 5,
+    "prix": "0€00"
+  }
+]
