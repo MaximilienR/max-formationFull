@@ -1,18 +1,13 @@
-const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
 const allowedOrigin = process.env.FRONT;
-const app = express();
 
-// Middleware pour parser le JSON
+const app = express();
 app.use(express.json());
 app.use(cookieParser());
-
-// Configuration CORS
 app.use(
   cors({
     origin: allowedOrigin,
@@ -21,27 +16,17 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+const route = require("./routes");
 
-// Tes routes API
-const routes = require("./routes");
-app.use(routes);
+app.use(route);
 
-// En production, sert les fichiers statiques du build React
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../max-formation/dist")));
-
-  // Toute route non gérée par l'API renvoie index.html (React Router)
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../max-formation/dist/index.html"));
-  });
-}
-
-// Connexion à MongoDB
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
+  .connect(process.env.MOGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
   .catch((e) => console.error(e));
 
-// Lancement du serveur
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(3000);
+
+//localhost:3000/

@@ -3,7 +3,7 @@ import Aside from "../components/Profil/aside";
 
 function Achat() {
   const [achats, setAchats] = useState([]);
-  
+
   // Récupérer user connecté
   const user = JSON.parse(localStorage.getItem("user"));
   const email = user?.email;
@@ -25,7 +25,9 @@ function Achat() {
           <table className="w-full border border-collapse border-gray-300 table-auto">
             <thead>
               <tr className="text-white bg-sky-900">
-                <th className="px-4 py-2 border border-gray-300">Nom de l'article</th>
+                <th className="px-4 py-2 border border-gray-300">
+                  Nom de l'article
+                </th>
                 <th className="px-4 py-2 border border-gray-300">Date</th>
                 <th className="px-4 py-2 border border-gray-300">Lien</th>
               </tr>
@@ -40,11 +42,18 @@ function Achat() {
               ) : (
                 achats.map((item, index) => (
                   <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 border border-gray-300">{item.nom}</td>
-                    <td className="px-4 py-2 border border-gray-300">{item.date}</td>
                     <td className="px-4 py-2 border border-gray-300">
-{/*   A METTRE PLUS TARD <a href={item.lien} target="_blank" rel="noopener noreferrer">*/}
-<a href="/contenu" target="_blank" rel="noopener noreferrer">
+                      {item.nom}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {item.date}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      <a
+                        href="/contenu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Voir
                       </a>
                     </td>

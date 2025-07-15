@@ -44,7 +44,7 @@ export default function Admin() {
     setShowModal(true);
   };
 
-  const openEditModal = (cours) => {
+  const openEditModal = async (cours) => {
     setEditingCoursId(cours._id);
     setCoursName(cours.name);
     setDescription(cours.description);
@@ -52,15 +52,30 @@ export default function Admin() {
     setVideo(cours.video || "");
     setImage(cours.image || "");
     setNiveau(cours.niveau || 1);
-    setQuiz(
-      cours.quiz || [
+
+    // 🔴 Appel API pour récupérer le quiz du cours
+    try {
+      const response = await getQuizzByCoursId(cours._id);
+      setQuiz(
+        response || [
+          {
+            question: "",
+            answers: ["", "", "", ""],
+            correctAnswerIndex: 0,
+          },
+        ]
+      );
+    } catch (err) {
+      console.error("Erreur lors de la récupération du quiz :", err);
+      setQuiz([
         {
           question: "",
           answers: ["", "", "", ""],
           correctAnswerIndex: 0,
         },
-      ]
-    );
+      ]);
+    }
+
     setShowModal(true);
   };
 

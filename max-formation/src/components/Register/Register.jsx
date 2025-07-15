@@ -1,15 +1,13 @@
-import React, { useState } from "react"; // Importer useState
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { signup } from "../../api/auth.api";
-
-// Importer les icônes d'œil de React Icons (par exemple, de 'fa' pour Font Awesome)
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Register() {
-  // Schéma de validation avec Yup (inchangé, sauf si vous voulez ajouter d'autres règles)
+  // Schéma de validation avec Yup
   const schema = yup
     .object({
       pseudo: yup.string().required("Le pseudo est obligatoire"),
@@ -90,7 +88,7 @@ export default function Register() {
       toast.success(
         successData.messageOk ||
           "Inscription réussie ! Veuillez vérifier vos e-mails."
-      ); // Correction du messageOk pour la réponse backend
+      );
     } catch (error) {
       console.error("Erreur lors de l'appel API pour l'inscription :", error);
       toast.error(
@@ -123,7 +121,7 @@ export default function Register() {
                 Pseudo
               </label>
               <input
-                {...register("pseudo")} // ✅ Correspond à ton schéma Yup + backend
+                {...register("pseudo")}
                 type="text"
                 id="pseudo"
                 placeholder="Votre pseudo"

@@ -3,8 +3,6 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-import { FaCheckCircle } from "react-icons/fa"; // Importe l'icône de succès
-
 import { contact } from "../api/contact.api";
 
 const schema = yup

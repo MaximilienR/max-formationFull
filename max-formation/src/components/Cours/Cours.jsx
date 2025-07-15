@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getCours } from "../../api/cours.api"; // <-- Assure-toi que ce chemin est correct
+import { getCours } from "../../api/cours.api";
 
 function Tableau() {
   const [cours, setCours] = useState([]);
   const [hoveredCourse, setHoveredCourse] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursParPage = 6;
 
   useEffect(() => {
     async function fetchCours() {
@@ -19,9 +21,17 @@ function Tableau() {
     fetchCours();
   }, []);
 
+  // Calcul pour pagination
+  const indexOfLastCours = currentPage * coursParPage;
+  const indexOfFirstCours = indexOfLastCours - coursParPage;
+  const currentCours = cours.slice(indexOfFirstCours, indexOfLastCours);
+
+  const totalPages = Math.ceil(cours.length / coursParPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
-    <div className="min-h-screen flex flex-col ">
-      {/* Contenu principal */}
+    <div className="min-h-screen flex flex-col">
       <main className="flex-1 flex items-center justify-center">
         <div className="container mx-auto p-4 bg-sky-900 rounded-2xl">
           <h1 className="text-3xl text-center mt-4 font-bold text-yellow-400">
@@ -29,12 +39,12 @@ function Tableau() {
           </h1>
 
           <div className="flex flex-wrap justify-center gap-6 mt-6">
-            {cours.length === 0 ? (
+            {currentCours.length === 0 ? (
               <p className="text-white text-center w-full">
                 Aucun cours disponible pour le moment.
               </p>
             ) : (
-              cours.map((cours) => (
+              currentCours.map((cours) => (
                 <div
                   key={cours._id}
                   className="relative w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 flex flex-col items-center text-center"
@@ -93,6 +103,25 @@ function Tableau() {
               ))
             )}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-6 space-x-2">
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => paginate(index + 1)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === index + 1
+                      ? "bg-gray-200 text-black font-bold"
+                      : "bg-yellow-400 text-gray-700"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

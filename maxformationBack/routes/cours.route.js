@@ -7,17 +7,19 @@ const {
   getCoursById,
   createQuizz,
   getQuizzByCoursId,
+  updateQuizz,
 } = require("../controllers/cours.controller");
 
 // Routes Cours
 router.get("/", getAllCours);
-router.post("/", createCours);
 router.get("/:id", getCoursById);
-router.delete("/:id", deleteCours);
+router.post("/", createCours);
 router.put("/:id", updateCours);
+router.delete("/:id", deleteCours);
 
 // Routes Quizz
 router.post("/quizz", createQuizz);
 router.get("/quizz/cours/:coursId", getQuizzByCoursId);
+router.put("/quiz/:id", updateQuizz);
 
 module.exports = router;

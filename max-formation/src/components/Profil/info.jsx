@@ -43,17 +43,33 @@ export default function Info() {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
+    // Vérification que mot de passe et confirmation correspondent
+    if (motDePasse !== confirmPassword) {
+      setErrors({ confirmPassword: "Les mots de passe ne correspondent pas." });
+      return;
+    } else {
+      setErrors({});
+    }
+
     try {
       const updatedData = {
         pseudo,
         email,
       };
 
+      // On ajoute motDePasse seulement s'il est rempli
+      if (motDePasse) {
+        updatedData.password = motDePasse;
+      }
+
       const { ok, data } = await updateUser(updatedData);
 
       if (ok) {
         localStorage.setItem("user", JSON.stringify(data.user));
         alert("Profil mis à jour !");
+        // On vide les champs mot de passe après mise à jour
+        setMotDePasse("");
+        setConfirmPassword("");
       } else {
         alert(data.msg || "Erreur lors de la mise à jour.");
       }
