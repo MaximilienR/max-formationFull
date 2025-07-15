@@ -5,8 +5,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
 
-const __dirname = path.resolve();
-
 const allowedOrigin = process.env.FRONT;
 const route = require("./routes");
 
