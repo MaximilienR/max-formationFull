@@ -1,31 +1,21 @@
 #!/bin/bash
+set -e
 
-echo "🧹 Nettoyage de l'environnement..."
+echo "🧹 Nettoyage des dossiers node_modules et fichiers package-lock.json..."
 
-rm -rf node_modules
-rm -f package-lock.json
+# Nettoyage à la racine
+rm -rf node_modules package-lock.json
 
-echo "📦 Réinstallation des dépendances..."
+# Nettoyage dans max-formation
+rm -rf max-formation/node_modules max-formation/package-lock.json || true
 
+echo "📦 Installation des dépendances à la racine..."
 npm install
 
-echo "🔍 Vérification de la version d'esbuild installée..."
+echo "📦 Installation des dépendances dans max-formation..."
+npm install --prefix max-formation
 
-npm ls esbuild
+echo "✅ Build du projet max-formation..."
+npm run build --prefix max-formation
 
-echo "🛠️ Forçage de la dernière version d'esbuild si besoin..."
-
-npm uninstall esbuild
-npm install esbuild@latest --save-dev
-
-echo "✅ Build local pour vérifier avant déploiement..."
-
-npm run build
-
-echo "🚀 Prêt pour git commit et push sur Render."
-echo "👉 Commandes suivantes :"
-echo "   git add package-lock.json"
-echo "   git commit -m 'Clean build, esbuild updated'"
-echo "   git push"
-
-echo "🎉 Script terminé."
+echo "🎉 Build terminée avec succès."
