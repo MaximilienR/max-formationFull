@@ -1,3 +1,10 @@
+const path = require("path");
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, "/maxformation/dist")));
+
+app.use(routes);
+
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -27,6 +34,9 @@ mongoose
   })
   .catch((e) => console.error(e));
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/maxformation/dist/index.html"));
+});
 app.listen(3000);
 
 //localhost:3000/
