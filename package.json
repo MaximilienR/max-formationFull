@@ -5,7 +5,7 @@
   "scripts": {
     "server": "nodemon maxformationBack/index.js",
     "start": "node maxformationBack/index.js",
-    "build": "npm install && npm install --prefix maxformation && npm run build --prefix maxformation"
+    "build": "npm install && npm install --prefix max-formation && npm run build --prefix max-formation"
   },
   "repository": {
     "type": "git",
@@ -34,5 +34,8 @@
     "rollup": "^4.45.0",
     "sinon": "^21.0.0",
     "vite": "^7.0.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.6"
   }
 }

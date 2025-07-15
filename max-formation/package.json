@@ -18,6 +18,7 @@
     "html2canvas-pro": "^1.5.11",
     "html2pdf.js": "^0.10.3",
     "jspdf": "^3.0.1",
+    "max-formationfull": "file:..",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
