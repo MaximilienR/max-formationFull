@@ -1,21 +1,41 @@
 #!/bin/bash
-set -e
+set -e  # Quitte si une commande échoue
 
-echo "🧹 Nettoyage des dossiers node_modules et fichiers package-lock.json..."
+echo "🧹 Nettoyage du backend..."
+rm -rf maxformationBack/node_modules maxformationBack/package-lock.json
 
-# Nettoyage à la racine
-rm -rf node_modules package-lock.json
+echo "🧹 Nettoyage du frontend..."
+rm -rf max-formation/node_modules max-formation/package-lock.json
 
-# Nettoyage dans max-formation
-rm -rf max-formation/node_modules max-formation/package-lock.json || true
-
-echo "📦 Installation des dépendances à la racine..."
+echo "📦 Installation des dépendances backend..."
+cd maxformationBack
 npm install
+cd ..
 
-echo "📦 Installation des dépendances dans max-formation..."
-npm install --prefix max-formation
+echo "📦 Installation des dépendances frontend..."
+cd max-formation
+npm install
+cd ..
 
-echo "✅ Build du projet max-formation..."
-npm run build --prefix max-formation
+echo "🔨 Build du frontend avec Vite..."
+cd max-formation
+npm run build
+cd ..
 
-echo "🎉 Build terminée avec succès."
+echo "✅ Build frontend terminée."
+
+echo "🛠 Lancement de la validation backend (optionnel)..."
+# Ici tu peux faire un test, ex: npm test dans backend si tu veux
+
+echo "🚀 Préparation déploiement..."
+
+# Ajout des changements package-lock.json
+git add max-formation/package-lock.json maxformationBack/package-lock.json
+
+# Commit avec message par défaut (à personnaliser)
+git commit -m "Clean build: dependencies reinstall and frontend build"
+
+# Push vers la branche principale
+git push origin master
+
+echo "🎉 Build & deploy terminés avec succès."
