@@ -4,6 +4,7 @@ const path = require("path");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const port = process.env.PORT || 5000;
 
 const allowedOrigin = process.env.FRONT;
 
