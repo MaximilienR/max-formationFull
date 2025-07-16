@@ -1,9 +1,10 @@
 // routes/progression.routes.js
-const express = require("express");
-const router = express.Router();
+// const express = require("express");
+// const router = express.Router();
+const router = require("express").Router();
 
 const { authMiddleware } = require("../middleware/auth");
-const progressionCtrl = require("../controllers/progression.controller")
+const progressionCtrl = require("../controllers/progression.controller");
 
 router.post("/", authMiddleware, progressionCtrl.createOrUpdateProgression);
 router.get("/", authMiddleware, progressionCtrl.getUserProgressions);
