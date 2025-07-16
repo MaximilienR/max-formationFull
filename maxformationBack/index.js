@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
+const __DIRNAME = path.resolve();
+
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -20,16 +22,21 @@ app.use(
   })
 );
 
+// Servir les fichiers statiques de la SPA (dossier dist)
+app.use(express.static(path.join(__DIRNAME, "/max-formation/dist")));
+
 const route = require("./routes");
 app.use(route);
 
-// Servir les fichiers statiques de la SPA (dossier dist)
-app.use(express.static(path.join(__dirname, "dist")));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__DIRNAME, "../max-formationdist")));
 
-// Route fallback vers index.html pour le rechargement sans erreur 404
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
+  app.get(/(.*)/, (req, res) => {
+    res.sendFile(
+      path.join(__DIRNAME, "../max-formation", "dist", "index.html")
+    );
+  });
+}
 
 mongoose
   .connect(process.env.MONGO_URI)
