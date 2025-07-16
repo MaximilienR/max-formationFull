@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Aside from "../components/Profil/aside";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 import {
   createCours,
   getCours,
@@ -7,17 +11,19 @@ import {
   updateCours,
 } from "../api/cours.api";
 
+const schema = yup.object().shape({
+  name: yup.string().required("Le nom du cours est obligatoire."),
+  description: yup.string().required("La description est obligatoire."),
+  explication: yup.string(),
+  video: yup.string().url("URL invalide pour la vidéo.").nullable(),
+  image: yup.string().required("L'image est obligatoire."),
+  niveau: yup.number().min(1).max(5).required("Le niveau est obligatoire."),
+});
+
 export default function Admin() {
   const [showModal, setShowModal] = useState(false);
-  const [coursName, setCoursName] = useState("");
-  const [description, setDescription] = useState("");
-  const [explication, setExplication] = useState("");
-  const [video, setVideo] = useState("");
-  const [image, setImage] = useState("");
-  const [niveau, setNiveau] = useState(1);
   const [cours, setCours] = useState([]);
   const [editingCoursId, setEditingCoursId] = useState(null);
-
   const [quiz, setQuiz] = useState([
     {
       question: "",
@@ -26,14 +32,66 @@ export default function Admin() {
     },
   ]);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      description: "",
+      explication: "",
+      video: "",
+      image: "",
+      niveau: 1,
+    },
+  });
+
+  useEffect(() => {
+    async function fetchCours() {
+      try {
+        const data = await getCours();
+        setCours(data);
+      } catch (error) {
+        toast.error("Erreur lors du chargement des cours : " + error.message);
+      }
+    }
+    fetchCours();
+  }, []);
+
+  const openEditModal = (coursItem) => {
+    setEditingCoursId(coursItem._id);
+    setValue("name", coursItem.name);
+    setValue("description", coursItem.description);
+    setValue("explication", coursItem.explication || "");
+    setValue("video", coursItem.video || "");
+    setValue("image", coursItem.image || "");
+    setValue("niveau", coursItem.niveau || 1);
+    setQuiz(
+      coursItem.quiz || [
+        {
+          question: "",
+          answers: ["", "", "", ""],
+          correctAnswerIndex: 0,
+        },
+      ]
+    );
+    setShowModal(true);
+  };
+
   const openAddModal = () => {
     setEditingCoursId(null);
-    setCoursName("");
-    setDescription("");
-    setExplication("");
-    setVideo("");
-    setImage("");
-    setNiveau(1);
+    reset({
+      name: "",
+      description: "",
+      explication: "",
+      video: "",
+      image: "",
+      niveau: 1,
+    });
     setQuiz([
       {
         question: "",
@@ -44,60 +102,9 @@ export default function Admin() {
     setShowModal(true);
   };
 
-  const openEditModal = async (cours) => {
-    setEditingCoursId(cours._id);
-    setCoursName(cours.name);
-    setDescription(cours.description);
-    setExplication(cours.explication || "");
-    setVideo(cours.video || "");
-    setImage(cours.image || "");
-    setNiveau(cours.niveau || 1);
-
-    // 🔴 Appel API pour récupérer le quiz du cours
-    try {
-      const response = await getQuizzByCoursId(cours._id);
-      setQuiz(
-        response || [
-          {
-            question: "",
-            answers: ["", "", "", ""],
-            correctAnswerIndex: 0,
-          },
-        ]
-      );
-    } catch (err) {
-      console.error("Erreur lors de la récupération du quiz :", err);
-      setQuiz([
-        {
-          question: "",
-          answers: ["", "", "", ""],
-          correctAnswerIndex: 0,
-        },
-      ]);
-    }
-
-    setShowModal(true);
-  };
-
-  const duplicateQuiz = (index) => {
-    const questionToDuplicate = quiz[index];
-    const newQuiz = [...quiz, { ...questionToDuplicate }];
-    setQuiz(newQuiz);
-  };
-
-  const handleSave = async () => {
-    if (!coursName.trim()) {
-      alert("Le nom du cours est obligatoire.");
-      return;
-    }
-
+  const handleSave = async (data) => {
     const body = {
-      name: coursName,
-      description,
-      explication,
-      video: video.trim() !== "" ? video : undefined,
-      image: image.trim(),
-      niveau: Number(niveau),
+      ...data,
       quiz,
     };
 
@@ -112,12 +119,7 @@ export default function Admin() {
         setCours((prev) => [...prev, newCours]);
       }
 
-      setCoursName("");
-      setDescription("");
-      setExplication("");
-      setVideo("");
-      setImage("");
-      setNiveau(1);
+      reset();
       setQuiz([
         {
           question: "",
@@ -127,8 +129,9 @@ export default function Admin() {
       ]);
       setEditingCoursId(null);
       setShowModal(false);
+      toast.success("Cours enregistré avec succès !");
     } catch (error) {
-      alert("Erreur : " + error.message);
+      toast.error("Erreur : " + error.message);
     }
   };
 
@@ -137,23 +140,17 @@ export default function Admin() {
       try {
         await deleteCours(id);
         setCours((prev) => prev.filter((cours) => cours._id !== id));
+        toast.success("Cours supprimé.");
       } catch (error) {
-        alert("Erreur lors de la suppression du cours : " + error.message);
+        toast.error("Erreur lors de la suppression : " + error.message);
       }
     }
   };
 
-  useEffect(() => {
-    async function fetchCours() {
-      try {
-        const data = await getCours();
-        setCours(data);
-      } catch (error) {
-        alert("Erreur lors du chargement des cours : " + error.message);
-      }
-    }
-    fetchCours();
-  }, []);
+  const duplicateQuiz = (index) => {
+    const questionToDuplicate = quiz[index];
+    setQuiz([...quiz, { ...questionToDuplicate }]);
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -188,20 +185,20 @@ export default function Admin() {
                 </td>
               </tr>
             ) : (
-              cours.map((cours) => (
-                <tr key={cours._id} className="hover:bg-gray-100">
+              cours.map((coursItem) => (
+                <tr key={coursItem._id} className="hover:bg-gray-100">
                   <td className="border border-gray-300 px-4 py-2">
-                    {cours.name}
+                    {coursItem.name}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-center">
                     <button
-                      onClick={() => openEditModal(cours)}
+                      onClick={() => openEditModal(coursItem)}
                       className="bg-yellow-400 text-white font-semibold px-3 py-1 rounded mr-2 hover:bg-yellow-500"
                     >
                       Modifier
                     </button>
                     <button
-                      onClick={() => handleDelete(cours._id)}
+                      onClick={() => handleDelete(coursItem._id)}
                       className="bg-red-600 text-white font-semibold px-3 py-1 rounded hover:bg-red-700"
                     >
                       Supprimer
@@ -222,93 +219,89 @@ export default function Admin() {
                   : "Ajouter un nouveau cours"}
               </h1>
 
-              <p className="text-lg text-center mb-10 max-w-2xl mx-auto">
-                Remplis les champs ci-dessous pour créer ou modifier un cours
-                dans ta plateforme.
-              </p>
-
               <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSave();
-                }}
+                onSubmit={handleSubmit(handleSave)}
                 className="space-y-6 bg-gray-300 p-8 rounded-2xl shadow-xl"
               >
-                {/* Nom, description, explication, video, image, niveau */}
+                {/* Nom du cours */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
                     Nom du cours
                   </label>
                   <input
-                    type="text"
-                    value={coursName}
-                    onChange={(e) => setCoursName(e.target.value)}
+                    {...register("name")}
                     className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                    placeholder="Ex : HTML & CSS - Débutant"
-                    required
                   />
+                  {errors.name && (
+                    <p className="text-red-600">{errors.name.message}</p>
+                  )}
                 </div>
 
+                {/* Description */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
                     Description du cours
                   </label>
                   <textarea
+                    {...register("description")}
                     rows={4}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
                     className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                    placeholder="Décris le contenu du cours"
                   />
+                  {errors.description && (
+                    <p className="text-red-600">{errors.description.message}</p>
+                  )}
                 </div>
 
+                {/* Explication */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
-                    Explication du cours
+                    Explication
                   </label>
                   <textarea
+                    {...register("explication")}
                     rows={4}
-                    value={explication}
-                    onChange={(e) => setExplication(e.target.value)}
                     className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                    placeholder="Ajoute une explication supplémentaire"
                   />
+                  {errors.explication && (
+                    <p className="text-red-600">{errors.explication.message}</p>
+                  )}
                 </div>
 
+                {/* Video */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
-                    Lien du cours (optionnel)
+                    Lien vidéo
                   </label>
                   <input
-                    type="url"
-                    value={video}
-                    onChange={(e) => setVideo(e.target.value)}
+                    {...register("video")}
                     className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                    placeholder="https://exemple.com/video"
                   />
+                  {errors.video && (
+                    <p className="text-red-600">{errors.video.message}</p>
+                  )}
                 </div>
 
+                {/* Image */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
                     Image d’illustration
                   </label>
                   <input
-                    type="url"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
+                    {...register("image")}
                     className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                    placeholder="https://exemple.com/image.jpg"
-                    required
                   />
+                  {errors.image && (
+                    <p className="text-red-600">{errors.image.message}</p>
+                  )}
                 </div>
 
+                {/* Niveau */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
-                    Niveau du cours (1 à 5)
+                    Niveau
                   </label>
                   <select
-                    value={niveau}
-                    onChange={(e) => setNiveau(e.target.value)}
+                    {...register("niveau")}
                     className="w-full px-4 py-2 rounded-lg bg-white text-black"
                   >
                     {[1, 2, 3, 4, 5].map((n) => (
@@ -317,6 +310,9 @@ export default function Admin() {
                       </option>
                     ))}
                   </select>
+                  {errors.niveau && (
+                    <p className="text-red-600">{errors.niveau.message}</p>
+                  )}
                 </div>
 
                 {/* Gestion du quiz */}
@@ -342,7 +338,6 @@ export default function Admin() {
                           setQuiz(updatedQuiz);
                         }}
                         className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                        placeholder="Ex: Quelle balise permet de créer un lien ?"
                       />
                     </div>
 
@@ -361,7 +356,6 @@ export default function Admin() {
                               setQuiz(updatedQuiz);
                             }}
                             className="w-full px-3 py-2 rounded-lg bg-white text-black"
-                            placeholder={`Réponse ${i + 1}`}
                           />
                         </div>
                       ))}
@@ -401,25 +395,6 @@ export default function Admin() {
                     </div>
                   </div>
                 ))}
-
-                <div className="flex justify-center mt-6">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setQuiz([
-                        ...quiz,
-                        {
-                          question: "",
-                          answers: ["", "", "", ""],
-                          correctAnswerIndex: 0,
-                        },
-                      ])
-                    }
-                    className="bg-green-500 text-white font-semibold px-6 py-2 rounded hover:bg-green-600"
-                  >
-                    Ajouter une nouvelle question
-                  </button>
-                </div>
 
                 <div className="flex justify-center gap-6 pt-6">
                   <button

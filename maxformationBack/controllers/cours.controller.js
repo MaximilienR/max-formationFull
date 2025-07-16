@@ -93,7 +93,6 @@ const deleteCours = async (req, res) => {
 };
 
 // 🔹 Mettre à jour un cours
-// 🔹 Mettre à jour un cours
 const updateCours = async (req, res) => {
   try {
     const { id } = req.params;

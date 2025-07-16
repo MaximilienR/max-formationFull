@@ -4,9 +4,7 @@ const User = require("../models/user/User");
 const jwt = require("jsonwebtoken");
 const { sendConfirmationEmail, sendReset } = require("../email/email");
 
-const SECRET = process.env.SECRET_KEY;
-const SECRET_KEY =
-  "803b3a856858df2230787355fcd88efb28e2bb4fca2aef64d26f103bcc9a7871fc64cdc840fb0acb0362f69447d895d8a31733be465570ae5ba3f997438022f2";
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const createResetToken = (email) => {
   return jwt.sign({ email }, SECRET_KEY, { expiresIn: "15m" });
@@ -191,7 +189,7 @@ const login = async (req, res) => {
     }
 
     const { password: pwd, ...userWithoutPassword } = user.toObject();
-    const token = jwt.sign({}, SECRET, {
+    const token = jwt.sign({}, SECRET_KEY, {
       expiresIn: "24h",
       subject: user._id.toString(),
       algorithm: "HS256",

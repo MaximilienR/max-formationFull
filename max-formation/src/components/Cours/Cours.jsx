@@ -21,12 +21,19 @@ function Tableau() {
     fetchCours();
   }, []);
 
-  // Calcul pour pagination
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filtrage avant pagination
+  const filteredCours = cours.filter((cours) =>
+    cours.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Pagination sur la liste filtrée
   const indexOfLastCours = currentPage * coursParPage;
   const indexOfFirstCours = indexOfLastCours - coursParPage;
-  const currentCours = cours.slice(indexOfFirstCours, indexOfLastCours);
+  const currentCours = filteredCours.slice(indexOfFirstCours, indexOfLastCours);
 
-  const totalPages = Math.ceil(cours.length / coursParPage);
+  const totalPages = Math.ceil(filteredCours.length / coursParPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -37,7 +44,15 @@ function Tableau() {
           <h1 className="text-3xl text-center mt-4 font-bold text-yellow-400">
             Nos formations
           </h1>
-
+          <div className="flex justify-center mt-6">
+            <input
+              type="text"
+              placeholder="Rechercher un cours..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full md:w-1/3 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+          </div>
           <div className="flex flex-wrap justify-center gap-6 mt-6">
             {currentCours.length === 0 ? (
               <p className="text-white text-center w-full">
