@@ -38,6 +38,6 @@ mongoose
   })
   .catch((e) => console.error(e));
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log("Server running on http://localhost:3000");
 });
