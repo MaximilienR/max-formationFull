@@ -1,3 +1,5 @@
+const path = require("path");
+
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -27,8 +29,13 @@ mongoose
   })
   .catch((e) => console.error(e));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+// Serve frontend static files (après build)
+app.use(express.static(path.join(__dirname, "../dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
+
+app.listen(3000);
+
 //localhost:3000/
