@@ -1,5 +1,3 @@
-const path = require("path");
-
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -28,13 +26,6 @@ mongoose
     console.log("Connected to MongoDB");
   })
   .catch((e) => console.error(e));
-
-// Serve frontend static files (après build)
-app.use(express.static(path.join(__dirname, "../dist")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist/index.html"));
-});
 
 app.listen(3000);
 
