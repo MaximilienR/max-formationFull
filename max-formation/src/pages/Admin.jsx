@@ -10,6 +10,7 @@ import {
   deleteCours,
   updateCours,
 } from "../api/cours.api";
+import { convertToEmbedUrl } from "../utils/helper";
 
 const schema = yup.object().shape({
   name: yup.string().required("Le nom du cours est obligatoire."),
@@ -103,8 +104,11 @@ export default function Admin() {
   };
 
   const handleSave = async (data) => {
+    const embedVideoUrl = convertToEmbedUrl(data.video);
+
     const body = {
       ...data,
+      video: embedVideoUrl,
       quiz,
     };
 

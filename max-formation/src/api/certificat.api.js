@@ -1,26 +1,26 @@
 import { BASE_URL } from "../utils/url";
 
 //Fonction pour  cree
-
-export async function createCertificat(values) {
+// certificat.api.js
+export async function createCertificat(data, token) {
   try {
-    const response = await fetch(`${BASE_URL}/certificat`, {
+    const response = await fetch("http://localhost:3000/certificat", {
       method: "POST",
-      body: JSON.stringify(values),
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // <-- ici on met le token dans le header
       },
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Erreur inconnue du serveur");
+      throw new Error(errorData.message || "Erreur inconnue");
     }
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Erreur API createCertificat:", error);
-    throw error;
+    return await response.json();
+  } catch (err) {
+    console.error("Erreur API createCertificat:", err);
+    throw err;
   }
 }

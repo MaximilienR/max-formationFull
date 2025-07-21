@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCoursById } from "../../api/cours.api";
-import videoDefault from "../../Assets/video/test.mp4";
+import videoDefault from "../../Assets/video/html_base.mp4";
 
 function CoursHTMLCSS() {
   const { id } = useParams();
@@ -23,7 +23,10 @@ function CoursHTMLCSS() {
     return <div className="text-center text-white">Chargement...</div>;
   }
 
-  const isYoutubeLink = cours.video && cours.video.includes("youtube.com");
+  const isYoutubeEmbed =
+    cours.video && cours.video.includes("youtube.com/embed");
+  const isDriveEmbed =
+    cours.video && cours.video.includes("drive.google.com/file/d");
 
   return (
     <div className="container mx-auto p-6 bg-sky-900 rounded-2xl font-['Josefin_Sans'] text-[#dfe4ea] overflow-hidden">
@@ -46,17 +49,17 @@ function CoursHTMLCSS() {
       </section>
 
       <section className="mt-8 text-center">
-        {isYoutubeLink ? (
+        {isYoutubeEmbed || isDriveEmbed ? (
           <iframe
             width="560"
             height="315"
-            src={cours.video.replace("watch?v=", "embed/")}
-            title="YouTube video player"
+            src={cours.video}
+            title="Video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="mx-auto rounded-lg shadow-lg"
-          ></iframe>
+          />
         ) : (
           <video
             width="560"
