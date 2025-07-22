@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import devImage from "../../Assets/dev.jpg";
 
 function Home() {
   return (
@@ -10,7 +9,7 @@ function Home() {
         </h1>
 
         <img
-          src={devImage}
+          src="max-formation\src\Assets\dev.jpg"
           alt="Image"
           className="object-cover w-full mb-4 h-1/2"
         />
