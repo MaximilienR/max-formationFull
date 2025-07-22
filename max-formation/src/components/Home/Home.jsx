@@ -9,7 +9,7 @@ function Home() {
         </h1>
 
         <img
-          src="../src/Assets/dev.jpg"
+          src="max-formation\src\Assets\dev.jpg"
           alt="Image"
           className="object-cover w-full mb-4 h-1/2"
         />
