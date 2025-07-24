@@ -3,7 +3,7 @@ const Progression = require("../models/progress/progression.model");
 
 async function createOrUpdateProgression(req, res) {
   const { coursId, etat } = req.body;
-  const userId = req.user.id; // <-- ici la correction
+  const userId = req.user.id;
 
   try {
     let progression = await Progression.findOne({ userId, coursId });
@@ -38,7 +38,7 @@ async function getUserProgressions(req, res) {
   }
 }
 
-module.exports = { 
-  createOrUpdateProgression, 
-  getUserProgressions
+module.exports = {
+  createOrUpdateProgression,
+  getUserProgressions,
 };

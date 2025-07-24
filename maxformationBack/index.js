@@ -22,11 +22,10 @@ app.use(
 const route = require("./routes");
 app.use(route);
 //PROD
+// mongoose.connect(process.env.MOGO_URI);
+//DEV
 mongoose
   .connect(process.env.MOGO_URI)
-  //DEV
-  // mongoose
-  //   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((e) => console.error(e));
 
