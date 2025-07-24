@@ -3,28 +3,28 @@ const User = require("../models/user/User");
 
 const createCertificats = async (req, res) => {
   try {
-    console.log("Requête reçue, données:", req.body);
-    console.log("Utilisateur authentifié :", req.user); // <-- Ajouté
-
-    const { name, date } = req.body;
+    const { name, date, courseName } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Le champ name est requis." });
     }
+    if (!courseName) {
+      return res
+        .status(400)
+        .json({ message: "Le champ courseName est requis." });
+    }
 
-    // 🆕 récupérer l'ID utilisateur depuis req.user si tu utilises une authentification
     const userId = req.user.id;
-    // ou req.user.id selon ton middleware d'authentification
 
     const newCertificat = new Certificat({
       name,
       date: date || new Date(),
-      user: userId, // ajouter l'utilisateur
+      user: userId,
+      courseName,
     });
 
     const savedCertificat = await newCertificat.save();
 
-    // 🆕 (optionnel) ajouter ce certificat à la liste de certificats de l'utilisateur
     await User.findByIdAndUpdate(userId, {
       $push: { certificats: savedCertificat._id },
     });

@@ -5,6 +5,7 @@ import { createCertificat } from "../api/certificat.api";
 import { getQuizzByCoursId } from "../api/cours.api";
 import { updateProgression, getUserProgressions } from "../api/progression.api";
 import Certificat from "./Certificat";
+import { getCoursById } from "../api/cours.api";
 
 export default function Quizz() {
   const { coursId } = useParams();
@@ -21,6 +22,7 @@ export default function Quizz() {
   const [alreadyFinished, setAlreadyFinished] = useState(false);
 
   const token = localStorage.getItem("token");
+  const [cours, setCours] = useState(null);
 
   // Vérifie si le cours est déjà terminé
   useEffect(() => {
@@ -70,6 +72,19 @@ export default function Quizz() {
     }
   }, []);
 
+  // Récupération des infos du cours
+  useEffect(() => {
+    async function fetchCours() {
+      try {
+        const data = await getCoursById(coursId);
+        setCours(data);
+      } catch (err) {
+        console.error("Erreur récupération cours :", err);
+      }
+    }
+    fetchCours();
+  }, [coursId]);
+
   // Gère la fin du quiz : confetti, certificat, progression
   useEffect(() => {
     if (finished && score === quizz.length && quizz.length > 0) {
@@ -88,13 +103,19 @@ export default function Quizz() {
       };
       frame();
 
-      if (pseudo && token) {
+      if (pseudo && token && cours) {
+        console.log("Cours avant création certificat :", cours);
+        console.log("cours.title =", cours.title);
+
         createCertificat(
-          { name: pseudo, date: new Date().toISOString() },
+          {
+            name: pseudo,
+            date: new Date().toISOString(),
+            courseName: cours.name, // <-- au lieu de cours.title
+          },
           token
         ).catch((err) => console.error("Erreur création certificat :", err));
       }
-
       const user = JSON.parse(localStorage.getItem("user"));
       const userId = user?._id;
 
@@ -106,7 +127,7 @@ export default function Quizz() {
           );
       }
     }
-  }, [finished, score, pseudo, quizz.length, coursId, token]);
+  }, [finished, score, pseudo, quizz.length, coursId, token, cours]);
 
   if (loading) return <p>Chargement du quiz...</p>;
   if (error) return <p>{error}</p>;

@@ -4,11 +4,14 @@ import { BASE_URL } from "../utils/url";
 // certificat.api.js
 export async function createCertificat(data, token) {
   try {
+    // //dev
+    // const response = await fetch(`${BASE_URL}/certificat`, {
+    // prod
     const response = await fetch("http://localhost:3000/certificat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // <-- ici on met le token dans le header
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
