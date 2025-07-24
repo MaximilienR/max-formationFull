@@ -21,6 +21,7 @@ export default function Parcours() {
       try {
         setLoading(true);
         const progressions = await getUserProgressions(token);
+        console.log("Progressions reçues :", progressions);
 
         const finished = progressions
           .filter((p) => p.etat === "terminé")

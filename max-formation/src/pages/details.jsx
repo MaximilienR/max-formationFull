@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { getCoursById } from "../api/cours.api";
 import { shop } from "../api/shop.api";
 import { toast } from "react-hot-toast";
+import { updateProgression } from "../api/progression.api";
 
 export default function Detail() {
   const { id } = useParams();
@@ -73,7 +74,15 @@ export default function Detail() {
         localStorage.setItem("achats", JSON.stringify(allAchats));
         setAlreadyBought(true);
 
-        // ✅ Ajouter ce cours à currentCourses
+        // Créer ou mettre à jour la progression côté backend en "en cours"
+        try {
+          await updateProgression({ coursId: id, etat: "en cours" });
+        } catch (err) {
+          console.error("Erreur lors de la création de la progression:", err);
+          toast.error("Impossible de mettre à jour la progression");
+        }
+
+        // Mise à jour localStorage currentCourses pour affichage UI
         const currentCourses =
           JSON.parse(localStorage.getItem("currentCourses")) || [];
         if (!currentCourses.includes(cours.name)) {

@@ -17,6 +17,6 @@ export async function shop(values) {
     return message;
   } catch (error) {
     console.log(error);
-    throw error; // pense à relancer l'erreur pour que le catch dans Detail puisse l'attraper
+    throw error;
   }
 }
