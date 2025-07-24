@@ -29,8 +29,8 @@ export default function Info() {
     try {
       const { ok, data } = await deleteAccount();
       if (ok) {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
+        localStorage.clear();
+
         window.location.href = "/login";
       } else {
         alert(data.msg || "Erreur lors de la suppression.");
