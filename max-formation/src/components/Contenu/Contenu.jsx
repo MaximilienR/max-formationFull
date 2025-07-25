@@ -36,16 +36,17 @@ function CoursHTMLCSS() {
 
       <section className="mt-6">
         <h2 className="mb-2 text-2xl font-bold text-yellow-400">Explication</h2>
-        <p
-          className="
-            text-lg whitespace-pre-line text-black font-semibold tracking-wide uppercase 
-            bg-gray-100 border border-red-400 rounded-lg p-4 shadow-lg 
-            hover:bg-red-200 transition duration-300 ease-in-out
-            max-w-full w-full box-border break-words max-h-200 overflow-y-auto
-          "
-        >
-          {cours.explication || "Aucune explication fournie."}
-        </p>
+       <p
+  className="
+    text-lg whitespace-pre-line text-black font-medium tracking-wide 
+    bg-gray-100 border border-red-400 rounded-lg p-4 shadow-lg 
+    hover:bg-black hover:text-white transition duration-300 ease-in-out
+    max-w-full w-full box-border break-words max-h-200 overflow-y-auto
+    font-[Inter]
+  "
+>
+  {cours.explication || "Aucune explication fournie."}
+</p>
       </section>
 
       <section className="mt-8 text-center">
