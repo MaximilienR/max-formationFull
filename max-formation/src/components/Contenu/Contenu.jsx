@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCoursById } from "../../api/cours.api";
 import videoDefault from "../../Assets/video/html_base.mp4";
+import DOMPurify from "dompurify";
 
 function CoursHTMLCSS() {
   const { id } = useParams();
@@ -36,17 +37,18 @@ function CoursHTMLCSS() {
 
       <section className="mt-6">
         <h2 className="mb-2 text-2xl font-bold text-yellow-400">Explication</h2>
-       <p
+  <div
   className="
-    text-lg whitespace-pre-line text-black font-medium tracking-wide 
+    text-lg text-black font-medium tracking-wide 
     bg-gray-100 border border-red-400 rounded-lg p-4 shadow-lg 
     hover:bg-black hover:text-white transition duration-300 ease-in-out
     max-w-full w-full box-border break-words max-h-200 overflow-y-auto
-    font-[Inter]
+    font-[Inter] prose max-w-none
   "
->
-  {cours.explication || "Aucune explication fournie."}
-</p>
+  dangerouslySetInnerHTML={{
+    __html: DOMPurify.sanitize(cours.explication || "<p>Aucune explication fournie.</p>"),
+  }}
+></div>
       </section>
 
       <section className="mt-8 text-center">

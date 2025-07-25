@@ -4,6 +4,8 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
+import Editor from "../components/Editor/Editor";
+
 import {
   createCours,
   getCours,
@@ -38,6 +40,7 @@ export default function Admin() {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -257,20 +260,18 @@ export default function Admin() {
                 </div>
 
                 {/* Explication */}
-                <div>
-                  <label className="block text-xl font-semibold mb-2 text-sky-900">
-                    Explication
-                  </label>
-                  <textarea
-                    {...register("explication")}
-                    rows={4}
-                    className="w-full px-4 py-2 rounded-lg bg-white text-black"
-                  />
-                  {errors.explication && (
-                    <p className="text-red-600">{errors.explication.message}</p>
-                  )}
-                </div>
-
+               <div>
+  <label className="block text-xl font-semibold mb-2 text-sky-900">
+    Explication
+  </label>
+  <Editor
+    value={watch("explication")}
+    onChange={(html) => setValue("explication", html)}
+  />
+  {errors.explication && (
+    <p className="text-red-600">{errors.explication.message}</p>
+  )}
+</div>
                 {/* Video */}
                 <div>
                   <label className="block text-xl font-semibold mb-2 text-sky-900">
