@@ -12,7 +12,7 @@ function Home() {
         <img
           src={devImage}
           alt="Image"
-          className="object-cover w-full mb-4 h-1/2"
+          className="object-cover w-full mb-4 h-1/4"
         />
       </header>
       <main>
