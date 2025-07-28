@@ -6,6 +6,7 @@ import videoDefault from "../../Assets/video/html_base.mp4";
 function CoursHTMLCSS() {
   const { id } = useParams();
   const [cours, setCours] = useState(null);
+  const [isColored, setIsColored] = useState(false); // 🔴 Ajout de l'état
 
   useEffect(() => {
     async function fetchCours() {
@@ -18,6 +19,10 @@ function CoursHTMLCSS() {
     }
     fetchCours();
   }, [id]);
+
+  const handleColorToggle = () => {
+    setIsColored((prev) => !prev); // 🔄 Change l'état au clic
+  };
 
   if (!cours) {
     return <div className="text-center text-white">Chargement...</div>;
@@ -35,18 +40,28 @@ function CoursHTMLCSS() {
       </h1>
 
       <section className="mt-6">
-        <h2 className="mb-2 text-2xl font-bold text-yellow-400">Explication</h2>
-       <p
-  className="
-    text-lg whitespace-pre-line text-black font-medium tracking-wide 
-    bg-gray-100 border border-red-400 rounded-lg p-4 shadow-lg 
-    hover:bg-black hover:text-white transition duration-300 ease-in-out
-    max-w-full w-full box-border break-words max-h-200 overflow-y-auto
-    font-[Inter]
-  "
->
-  {cours.explication || "Aucune explication fournie."}
-</p>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-2xl font-bold text-yellow-400">Explication</h2>
+
+          <button
+            onClick={handleColorToggle}
+            className="rounded bg-yellow-300 px-4 py-2 text-black font-bold hover:bg-yellow-400"
+          >
+            changer mode
+          </button>
+        </div>
+
+        <p
+          className={`
+      text-lg whitespace-pre-line font-medium tracking-wide 
+      border border-red-400 rounded-lg p-4 shadow-lg 
+      transition duration-300 ease-in-out max-w-full w-full box-border break-words max-h-200 overflow-y-auto
+      font-[Inter]
+      ${isColored ? "bg-black text-white" : "bg-gray-100 text-black"}
+    `}
+        >
+          {cours.explication || "Aucune explication fournie."}
+        </p>
       </section>
 
       <section className="mt-8 text-center">
