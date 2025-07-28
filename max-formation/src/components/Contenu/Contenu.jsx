@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCoursById } from "../../api/cours.api";
 import videoDefault from "../../Assets/video/html_base.mp4";
-
+import jourNuit from "../../Assets/jourNuit.png";
 function CoursHTMLCSS() {
   const { id } = useParams();
   const [cours, setCours] = useState(null);
@@ -47,7 +47,7 @@ function CoursHTMLCSS() {
             onClick={handleColorToggle}
             className="rounded bg-yellow-300 px-4 py-2 text-black font-bold hover:bg-yellow-400"
           >
-            changer mode
+            <img src={jourNuit} alt="Image" className="w-5 h-5" />
           </button>
         </div>
 
