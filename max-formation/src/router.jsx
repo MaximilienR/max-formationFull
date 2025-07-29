@@ -53,8 +53,22 @@ const router = createBrowserRouter([
 
       { index: true, element: <Home /> },
 
-      { path: "register", element: <Register /> },
-      { path: "login", element: <Login /> },
+      {
+        path: "register",
+        element: (
+          <UserNotConnected>
+            <Register />
+          </UserNotConnected>
+        ),
+      },
+      {
+        path: "login",
+        element: (
+          <UserNotConnected>
+            <Login />
+          </UserNotConnected>
+        ),
+      },
       { path: "cours", element: <Cours /> },
       { path: "cours/:id", element: <Detail /> }, // ✅ vers page détail
       { path: "password", element: <Password /> },
@@ -68,7 +82,14 @@ const router = createBrowserRouter([
         ),
       },
       { path: "Coatch", element: <Coaching /> },
-      { path: "reset", element: <Reset /> },
+      {
+        path: "reset",
+        element: (
+          <UserNotConnected>
+            <Reset />
+          </UserNotConnected>
+        ),
+      },
       {
         path: "profil",
         element: (
