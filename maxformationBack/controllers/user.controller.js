@@ -190,16 +190,18 @@ const login = async (req, res) => {
 
     const { password: pwd, ...userWithoutPassword } = user.toObject();
     const token = jwt.sign({}, SECRET_KEY, {
-      expiresIn: "24h",
       subject: user._id.toString(),
+      expiresIn: "7d",
       algorithm: "HS256",
     });
+    console.log(">> Envoi du cookie côté serveur");
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    console.log(">> Envoi du cookie apres");
 
     res.status(200).json({ user: userWithoutPassword, token });
 

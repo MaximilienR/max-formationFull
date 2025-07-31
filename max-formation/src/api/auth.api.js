@@ -1,14 +1,14 @@
 import { BASE_URL } from "../utils/url";
 
 export async function signup(values) {
-  console.log(values);
   try {
     const response = await fetch(`${BASE_URL}/user/signup`, {
       method: "POST",
       body: JSON.stringify(values),
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       },
+      credentials: "include", // <-- Permet d'envoyer le cookie
     });
 
     return response;
@@ -19,8 +19,6 @@ export async function signup(values) {
 }
 
 export async function login(values) {
-  console.log(" voila les valeur " + values);
-
   try {
     const response = await fetch(`${BASE_URL}/user/login`, {
       method: "POST",
@@ -28,6 +26,7 @@ export async function login(values) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
+      credentials: "include", // <-- Permet d'envoyer le cookie
     });
 
     const data = await response.json();
@@ -37,23 +36,21 @@ export async function login(values) {
     }
 
     console.log("Login réussi :", data);
-
-    localStorage.setItem("token", data.token);
+    // Plus besoin de localStorage.setItem ici car token est dans cookie HTTP-only
   } catch (error) {
     console.error("Erreur de login :", error.message);
   }
 }
 
 export async function updateUser(updatedData) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${BASE_URL}/user/update`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // Suppression de Authorization, on utilise cookie
     },
     body: JSON.stringify(updatedData),
+    credentials: "include", // <-- Important pour envoyer cookie
   });
 
   const data = await response.json();
@@ -67,6 +64,7 @@ export async function reset(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+    credentials: "include", // <-- Si ton backend attend le cookie
   });
 
   const responseData = await response.json();
@@ -80,6 +78,7 @@ export async function forgot(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+    credentials: "include", // <-- Si besoin
   });
 
   const responseData = await response.json();
@@ -87,15 +86,14 @@ export async function forgot(data) {
 }
 
 export async function deleteAccount() {
-  const token = localStorage.getItem("token");
-
   try {
     const response = await fetch(`${BASE_URL}/user/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Plus besoin d'Authorization, cookie géré automatiquement
       },
+      credentials: "include", // <-- Important pour cookie
     });
 
     const data = await response.json();

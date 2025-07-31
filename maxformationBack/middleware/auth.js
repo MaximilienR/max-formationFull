@@ -1,12 +1,17 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET_KEY;
 
 const authMiddleware = (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ msg: "Non autorisé" });
+  console.log("Cookies reçus par le serveur :", req.cookies);
 
-    const token = authHeader.split(" ")[1];
+  try {
+    // Récupérer le token depuis le cookie
+    const token = req.cookies.token; // <-- changement ici
+
+    if (!token) {
+      return res.status(401).json({ msg: "Non autorisé : token manquant" });
+    }
+
     console.log("Token reçu :", token);
     console.log("SECRET_KEY :", SECRET);
 
@@ -15,7 +20,7 @@ const authMiddleware = (req, res, next) => {
     next();
   } catch (error) {
     console.error("Erreur dans authMiddleware:", error);
-    return res.status(401).json({ msg: "Token invalide" });
+    return res.status(401).json({ msg: "Token invalide ou expiré" });
   }
 };
 
