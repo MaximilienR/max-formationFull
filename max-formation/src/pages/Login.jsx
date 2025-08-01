@@ -65,6 +65,7 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include", // <-- Ajoute ça pour envoyer le cookie
       });
 
       const result = await response.json();
@@ -81,8 +82,10 @@ export default function Login() {
       }
 
       // Connexion réussie
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
+      // Plus besoin de stocker le token localStorage si tu utilises cookie HTTP-only
+      // localStorage.setItem("token", result.token);
+      // localStorage.setItem("user", JSON.stringify(result.user));
+
       setUser(result.user);
       toast.success("Connexion réussie !");
       console.log("Utilisateur connecté :", result.user);
