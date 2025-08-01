@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../components/Context/userContext";
-import { BASE_URL } from "../utils/url";
+import { login } from "../api/auth.api"; // <-- import login depuis ton api
 
 // Schéma de validation
 const schema = yup.object({
@@ -59,32 +59,16 @@ export default function Login() {
 
   const submit = async (data) => {
     try {
-      const response = await fetch(`${BASE_URL}/user/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-        credentials: "include", // <-- Ajoute ça pour envoyer le cookie
-      });
+      const result = await login(data);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 403 && result.remainingTime) {
-          setIsLocked(true);
-          setRemainingTime(result.remainingTime);
-          toast.error("Compte bloqué temporairement.");
-          return;
-        }
-
-        throw new Error(result.msg || "Erreur de connexion");
+      // Si backend renvoie un blocage (ex: code 403 avec remainingTime)
+      // On peut gérer ici si ton API renvoie ces infos dans result
+      if (result.remainingTime) {
+        setIsLocked(true);
+        setRemainingTime(result.remainingTime);
+        toast.error("Compte bloqué temporairement.");
+        return;
       }
-
-      // Connexion réussie
-      // Plus besoin de stocker le token localStorage si tu utilises cookie HTTP-only
-      // localStorage.setItem("token", result.token);
-      // localStorage.setItem("user", JSON.stringify(result.user));
 
       setUser(result.user);
       toast.success("Connexion réussie !");
