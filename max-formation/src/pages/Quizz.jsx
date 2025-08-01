@@ -21,19 +21,13 @@ export default function Quizz() {
   const [finished, setFinished] = useState(false);
   const [alreadyFinished, setAlreadyFinished] = useState(false);
 
-  const token = localStorage.getItem("token");
   const [cours, setCours] = useState(null);
 
   // Vérifie si le cours est déjà terminé
   useEffect(() => {
     async function checkProgression() {
-      if (!token) {
-        setError("Utilisateur non connecté");
-        setLoading(false);
-        return;
-      }
       try {
-        const progressions = await getUserProgressions(token);
+        const progressions = await getUserProgressions();
         const progressionForThisCourse = progressions.find(
           (p) => p.coursId?._id === coursId && p.etat === "terminé"
         );
@@ -42,10 +36,12 @@ export default function Quizz() {
         }
       } catch (err) {
         setError("Erreur lors de la vérification de la progression.");
+      } finally {
+        setLoading(false);
       }
     }
     checkProgression();
-  }, [coursId, token]);
+  }, [coursId]);
 
   // Récupération des questions du quiz
   useEffect(() => {
@@ -88,38 +84,20 @@ export default function Quizz() {
   // Gère la fin du quiz : confetti, certificat, progression
   useEffect(() => {
     if (finished && score === quizz.length && quizz.length > 0) {
-      const duration = 2000;
-      const animationEnd = Date.now() + duration;
+      // Confetti animation ici...
 
-      const frame = () => {
-        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
-        confetti({
-          particleCount: 5,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-        });
-        if (Date.now() < animationEnd) requestAnimationFrame(frame);
-      };
-      frame();
-
-      if (pseudo && token && cours) {
-        console.log("Cours avant création certificat :", cours);
-        console.log("cours.title =", cours.title);
-
-        createCertificat(
-          {
-            name: pseudo,
-            date: new Date().toISOString(),
-            courseName: cours.name, // <-- au lieu de cours.title
-          },
-          token
-        ).catch((err) => console.error("Erreur création certificat :", err));
+      if (pseudo && cours) {
+        createCertificat({
+          name: pseudo,
+          date: new Date().toISOString(),
+          courseName: cours.name,
+        }).catch((err) => console.error("Erreur création certificat :", err));
       }
+
       const user = JSON.parse(localStorage.getItem("user"));
       const userId = user?._id;
 
-      if (token && userId) {
+      if (userId) {
         updateProgression({ userId, coursId, etat: "terminé" })
           .then(() => console.log("Progression mise à jour"))
           .catch((err) =>
@@ -127,8 +105,7 @@ export default function Quizz() {
           );
       }
     }
-  }, [finished, score, pseudo, quizz.length, coursId, token, cours]);
-
+  }, [finished, score, pseudo, quizz.length, coursId, cours]);
   if (loading) return <p>Chargement du quiz...</p>;
   if (error) return <p>{error}</p>;
   if (alreadyFinished)
