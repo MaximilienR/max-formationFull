@@ -7,20 +7,11 @@ export default function Parcours() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Remplace par la vraie récupération de ton token (context, localStorage...)
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
-    if (!token) {
-      setError("Utilisateur non connecté");
-      setLoading(false);
-      return;
-    }
-
     async function fetchProgressions() {
       try {
         setLoading(true);
-        const progressions = await getUserProgressions(token);
+        const progressions = await getUserProgressions();
         console.log("Progressions reçues :", progressions);
 
         const finished = progressions
@@ -45,7 +36,7 @@ export default function Parcours() {
     }
 
     fetchProgressions();
-  }, [token]);
+  }, []);
 
   if (loading) return <div>Chargement...</div>;
   if (error) return <div className="text-red-600">Erreur : {error}</div>;

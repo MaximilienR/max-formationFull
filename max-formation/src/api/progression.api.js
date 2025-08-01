@@ -1,35 +1,34 @@
 import { BASE_URL } from "../utils/url";
 
+// ✅ Mise à jour de la progression sans token explicite
 export async function updateProgression(payload) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${BASE_URL}/progression`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
+    credentials: "include", // ✅ pour envoyer le cookie JWT
   });
 
   if (!response.ok) {
-    const errorText = await response.text(); // <-- pour debugger
+    const errorText = await response.text();
     throw new Error(errorText || "Erreur mise à jour progression");
   }
 
   return response.json();
 }
 
-
-export async function getUserProgressions(token) {
+// ✅ Récupération des progressions sans token en argument
+export async function getUserProgressions() {
   const response = await fetch(`${BASE_URL}/progression`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    method: "GET",
+    credentials: "include", // ✅ essentiel
   });
 
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des progressions");
   }
+
   return response.json();
 }

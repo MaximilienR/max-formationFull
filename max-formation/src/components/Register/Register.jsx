@@ -72,24 +72,21 @@ export default function Register() {
   async function submit(values) {
     console.log("Valeurs du formulaire soumises :", values);
     try {
-      const response = await signup(values);
+      const { ok, data } = await signup(values);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erreur API lors de l'inscription :", errorData);
+      if (!ok) {
+        console.error("Erreur API lors de l'inscription :", data);
         toast.error(
-          errorData.message || "Une erreur est survenue lors de l'inscription."
+          data.message || "Une erreur est survenue lors de l'inscription."
         );
         return;
       }
 
-      const successData = await response.json();
-      console.log("Succès API inscription :", successData);
+      console.log("Succès API inscription :", data);
       toast.success(
-        successData.messageOk ||
-          "Inscription réussie ! Veuillez vérifier vos e-mails."
+        data.messageOk || "Inscription réussie ! Veuillez vérifier vos e-mails."
       );
-      //vide les champs après inscription
+
       reset();
     } catch (error) {
       console.error("Erreur lors de l'appel API pour l'inscription :", error);

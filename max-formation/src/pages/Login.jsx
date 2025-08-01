@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../components/Context/userContext";
-import { login } from "../api/auth.api"; // <-- import login depuis ton api
+import { login } from "../api/auth.api";
 
 // Schéma de validation
 const schema = yup.object({
