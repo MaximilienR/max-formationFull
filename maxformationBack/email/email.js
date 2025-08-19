@@ -29,8 +29,7 @@ const sendConfirmationEmail = async (email, token) => {
     subject: "Confirmez votre inscription",
     html: `
       <h2>Bienvenue !</h2>
-      <p>Merci de vous être inscrit. Cliquez sur le lien ci-dessous pour confirmer votre email :</p>
-      <a href="${url}">Confirmer mon email</a>
+      <p>Bienvenue sur notre site ! Cliquez sur le lien suivant pour continuer votre inscription : <a href="${process.env.FRONT}/login?token=${token}">Confirmer l'inscription</a></p>
     `,
   };
   await sendMailSafe(mailOptions);
