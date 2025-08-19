@@ -91,6 +91,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "reset/:token",
+        element: (
+          <UserNotConnected>
+            <Reset />
+          </UserNotConnected>
+        ),
+      },
+      {
         path: "profil",
         element: (
           <UserConnected>

@@ -20,10 +20,7 @@ const schema = yup.object().shape({
     ),
   confirmPassword: yup
     .string()
-    .oneOf(
-      [yup.ref("password"), null],
-      "Les mots de passe ne correspondent pas"
-    )
+    .oneOf([yup.ref("password"), null], "Les mots de passe ne correspondent pas")
     .required("Confirmation requise"),
 });
 
@@ -47,7 +44,7 @@ export default function Reset() {
     setShowConfirmPassword(!showConfirmPassword);
 
   const submit = async (data) => {
-    const token = searchParams.get("token");
+    const token = searchParams.get("token"); // récupère le token dans l'URL
 
     if (!token) {
       toast.error("Lien invalide ou expiré");
@@ -57,9 +54,7 @@ export default function Reset() {
     try {
       const response = await fetch(`${BASE_URL}/user/resetPassword`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token,
           newPassword: data.password,
@@ -80,7 +75,7 @@ export default function Reset() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center ">
+    <div className="min-h-screen flex items-center justify-center">
       <form
         onSubmit={handleSubmit(submit)}
         className="container mx-auto p-12 bg-sky-900 rounded-2xl"
@@ -110,18 +105,13 @@ export default function Reset() {
               />
               <span
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-white cursor-pointer top-6"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") togglePasswordVisibility();
+                }}
                 role="button"
                 tabIndex={0}
-                aria-label={
-                  showPassword
-                    ? "Masquer le mot de passe"
-                    : "Afficher le mot de passe"
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ")
-                    togglePasswordVisibility();
-                }}
+                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-white cursor-pointer top-6"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
@@ -151,18 +141,15 @@ export default function Reset() {
               />
               <span
                 onClick={toggleConfirmPasswordVisibility}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-white cursor-pointer top-6"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") toggleConfirmPasswordVisibility();
+                }}
                 role="button"
                 tabIndex={0}
                 aria-label={
-                  showConfirmPassword
-                    ? "Masquer le mot de passe"
-                    : "Afficher le mot de passe"
+                  showConfirmPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"
                 }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ")
-                    toggleConfirmPasswordVisibility();
-                }}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-white cursor-pointer top-6"
               >
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
