@@ -50,7 +50,7 @@ function Tableau() {
               placeholder="Rechercher un cours..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 text-white border border-gray-300 rounded-md md:w-1/3 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+  className="w-full px-4 py-2 text-white placeholder-white border border-gray-300 rounded-md md:w-1/3 focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
           </div>
           <div className="flex flex-wrap justify-center gap-6 mt-6">
