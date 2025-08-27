@@ -57,34 +57,31 @@ export default function Login() {
     return () => clearInterval(interval);
   }, [isLocked, remainingTime]);
 
-  const submit = async (data) => {
-    try {
-      const result = await login(data);
+const submit = async (data) => {
+  try {
+    const result = await login(data);
 
-      // Si backend renvoie un blocage (ex: code 403 avec remainingTime)
-      // On peut gérer ici si ton API renvoie ces infos dans result
-      if (result.remainingTime) {
-        setIsLocked(true);
-        setRemainingTime(result.remainingTime);
-        toast.error("Compte bloqué temporairement.");
-        return;
-      }
+    setUser(result.user);
+    toast.success("Connexion réussie !");
+    navigate(from);
 
-      setUser(result.user);
-      toast.success("Connexion réussie !");
-      console.log("Utilisateur connecté :", result.user);
-
-      navigate(from);
-    } catch (error) {
-      console.error("Erreur :", error.message);
-      toast.error(error.message);
+  } catch (error) {
+    // error contient maintenant { msg, remainingTime, lockedUntil }
+    if (error.remainingTime) {
+      setIsLocked(true);
+      setRemainingTime(error.remainingTime);
+      toast.error(error.msg || "Compte bloqué temporairement.");
+      return;
     }
-  };
+
+    toast.error(error.msg || "Erreur inconnue");
+  }
+};
 
   return (
     <div className="container flex items-center justify-center p-4 mx-auto bg-sky-900 rounded-2xl mt-50 mb-50">
       <div className="w-full p-4 md:w-1/2 xl:w-1/3">
-        <h1 className="text-3xl text-center mt-4 font-bold text-yellow-400">
+        <h1 className="mt-4 text-3xl font-bold text-center text-yellow-400">
           Connexion
         </h1>
         <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
@@ -135,7 +132,7 @@ export default function Login() {
           </label>
 
           {isLocked && (
-            <p className="text-center text-red-200 mt-2">
+            <p className="mt-2 text-center text-red-200">
               Compte bloqué. Veuillez réessayer dans{" "}
               <strong>{Math.ceil(remainingTime / 60000)} min</strong>.
             </p>
