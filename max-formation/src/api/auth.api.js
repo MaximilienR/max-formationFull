@@ -28,7 +28,7 @@ export async function login(values) {
 
   if (!response.ok) {
     // On renvoie une erreur avec le message pour la gestion côté UI
-    throw new Error(data.message || "Login échoué");
+    throw data
   }
 
   // Retourne les données utiles (ex: user)
