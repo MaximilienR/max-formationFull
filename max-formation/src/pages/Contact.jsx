@@ -50,6 +50,7 @@ export default function Contact() {
         toast.success(
           "Email envoyé avec succès ! Veuillez vérifier votre boîte de réception."
         );
+        reset();
       } else if (feedback && feedback.error) {
         toast.error(feedback.error);
       } else {
