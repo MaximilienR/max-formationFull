@@ -1,3 +1,4 @@
+const { authMiddleware } = require("../middleware/auth");
 const router = require("express").Router();
 const {
   getAllCours,
@@ -11,15 +12,15 @@ const {
 } = require("../controllers/cours.controller");
 
 // Routes Cours
-router.get("/", getAllCours);
-router.get("/:id", getCoursById);
-router.post("/", createCours);
-router.put("/:id", updateCours);
-router.delete("/:id", deleteCours);
+router.get("/", getAllCours);  
+router.get("/:id", getCoursById); 
+router.post("/", authMiddleware, createCours);
+router.put("/:id", authMiddleware, updateCours);
+router.delete("/:id", authMiddleware, deleteCours);
 
 // Routes Quizz
-router.post("/quizz", createQuizz);
-router.get("/quizz/cours/:coursId", getQuizzByCoursId);
-router.put("/quiz/:id", updateQuizz);
+router.post("/quizz", authMiddleware, createQuizz);
+router.get("/quizz/cours/:coursId", getQuizzByCoursId); 
+router.put("/quiz/:id", authMiddleware, updateQuizz);
 
 module.exports = router;
